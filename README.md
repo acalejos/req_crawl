@@ -1,6 +1,6 @@
 # ReqCrawl
 
-[![ReqCraw version](https://img.shields.io/hexpm/v/req_craw.svg)](https://hex.pm/packages/req_crawl)
+[![ReqCrawl version](https://img.shields.io/hexpm/v/req_crawl.svg)](https://hex.pm/packages/req_crawl)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/req_crawl/)
 [![Hex Downloads](https://img.shields.io/hexpm/dt/req_crawl)](https://hex.pm/packages/req_crawl)
 [![Twitter Follow](https://img.shields.io/twitter/follow/ac_alejos?style=social)](https://twitter.com/ac_alejos)

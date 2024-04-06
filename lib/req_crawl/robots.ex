@@ -12,23 +12,15 @@ defmodule ReqCrawl.Robots do
     * `:allow` - A list of allowed paths
     * `:disallow` - A list of the disallowed paths
 
-  ## Options
-
-  * `:robots_output_target` - Where to store the parsed output. Defaults to
-    * `:body` - Overwrites the existing body.
-    * `:header` - Stores in the response headers under the `:robots` key
+  Output is stored in the `ReqResponse` in the private field under the `:crawl_robots` key
   """
-  def attach(%Req.Request{} = request, options \\ []) do
+  def attach(%Req.Request{} = request, _options \\ []) do
     request
-    |> Req.Request.register_options([:robots_output_target])
-    |> Req.Request.merge_options(options)
     |> Req.Request.append_response_steps(parse_robots: &parse_robots_txt/1)
   end
 
   # Regexes taken from https://github.com/ravern/gollum/blob/61872d14e70e3ed8a6f619eb0ff066b8b1548ddc/lib/gollum/parser.ex#L35
   defp parse_robots_txt({%Req.Request{url: %URI{path: "/robots.txt"}} = request, response}) do
-    output_target = Map.get(request.options, :robots_output_target, :body)
-
     {%{errors: errors, rules: rules, sitemaps: sitemaps}, last_agents, last_body, _prev} =
       response.body
       |> String.split("\n")
@@ -148,16 +140,7 @@ defmodule ReqCrawl.Robots do
 
     robots = %{errors: errors, sitemaps: sitemaps, rules: rules}
 
-    case output_target do
-      :body ->
-        {request, struct!(response, body: robots)}
-
-      :header ->
-        {request,
-         struct!(response,
-           headers: Map.update(response, :headers, %{}, &Map.put_new(&1, "robots", robots))
-         )}
-    end
+    {request, Req.Response.put_private(response, :crawl_robots, robots)}
   end
 
   defp parse_robots_txt(payload), do: payload

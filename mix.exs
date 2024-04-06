@@ -31,6 +31,7 @@ defmodule ReqCrawl.MixProject do
   defp deps do
     [
       {:req, "~> 0.4"},
+      {:saxy, "~> 1.5", optional: true},
       {:ex_doc, ">= 0.0.0", only: :docs, runtime: false}
     ]
   end

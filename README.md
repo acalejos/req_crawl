@@ -7,14 +7,13 @@
 
 Req plugins to support common crawling functions
 
-Right now this only consists of the `ReqCrawl.Robots` plugin to parse `robots.txt` files
-
 ## Installation
 
 ```elixir
 def deps do
   [
-    {:req_crawl, "~> 0.1.0"}
+    {:req_crawl, "~> 0.2.0"}
+    {:saxy, "~> 1.5"} # Optionally to use `ReqCrawl.Sitemap`
   ]
 end
 ```
@@ -36,8 +35,17 @@ It outputs a map with the following fields:
   * `:allow` - A list of allowed paths
   * `:disallow` - A list of the disallowed paths
 
-#### Options
+### ReqCrawl.Sitemap
 
-* `:robots_output_target` - Where to store the parsed output. Defaults to
-  * `:body` - Overwrites the existing body.
-  * `:header` - Stores in the response headers under the `:robots` key
+Gathers all URLs from a Sitemap or SitemapIndex according to the specification described
+at <https://sitemaps.org/protocol.html>
+
+Supports the following formats:
+
+* `.xml` (for `sitemap` and `sitemapindex`)
+* `.txt` (for `sitemap`)
+
+Outputs a 2-Tuple of `{type, urls}` where `type` is one of `:sitemap` or `:sitemapindex` and `urls` is a list
+of URL strings extracted from the body.
+
+Output is stored in the `ReqResponse` in the private field under the `:crawl_sitemap` key

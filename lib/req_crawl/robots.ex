@@ -19,7 +19,7 @@ defmodule ReqCrawl.Robots do
     |> Req.Request.append_response_steps(parse_robots: &parse_robots_txt/1)
   end
 
-  # Regexes taken from https://github.com/ravern/gollum/blob/61872d14e70e3ed8a6f619eb0ff066b8b1548ddc/lib/gollum/parser.ex#L35
+  # Regexes based on https://github.com/ravern/gollum/blob/61872d14e70e3ed8a6f619eb0ff066b8b1548ddc/lib/gollum/parser.ex#L35
   defp parse_robots_txt({%Req.Request{url: %URI{path: "/robots.txt"}} = request, response}) do
     {%{errors: errors, rules: rules, sitemaps: sitemaps}, last_agents, last_body, _prev} =
       response.body
@@ -35,7 +35,7 @@ defmodule ReqCrawl.Robots do
 
         {line, idx}, {acc, current_agents, current_body, previous} ->
           cond do
-            path = Regex.run(~r/^allow:?\s(.+)$/i, line, capture: :all_but_first) ->
+            path = Regex.run(~r/^\s*allow:?\s*(.+)$/i, line, capture: :all_but_first) ->
               path = hd(path)
 
               if String.starts_with?(path, "/") do
@@ -59,7 +59,7 @@ defmodule ReqCrawl.Robots do
                 }
               end
 
-            path = Regex.run(~r/^disallow:?\s(.+)$/i, line, capture: :all_but_first) ->
+            path = Regex.run(~r/^\s*disallow:?\s*(.+)$/i, line, capture: :all_but_first) ->
               path = hd(path)
 
               if String.starts_with?(path, "/") do
@@ -83,7 +83,7 @@ defmodule ReqCrawl.Robots do
                 }
               end
 
-            agent = Regex.run(~r/^user-agent:?\s(.+)$/i, line, capture: :all_but_first) ->
+            agent = Regex.run(~r/^\s*user-agent:?\s*(.+)$/i, line, capture: :all_but_first) ->
               case previous do
                 # First group in the file
                 nil ->
@@ -105,7 +105,7 @@ defmodule ReqCrawl.Robots do
                   }
               end
 
-            sitemap = Regex.run(~r/^sitemap:?\s(.+)$/i, line, capture: :all_but_first) ->
+            sitemap = Regex.run(~r/^\s*sitemap:?\s*(.+)$/i, line, capture: :all_but_first) ->
               {
                 Map.update!(acc, :sitemaps, fn sitemaps -> [hd(sitemap) | sitemaps] end),
                 current_agents,

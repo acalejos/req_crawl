@@ -4,7 +4,7 @@ defmodule ReqCrawl.MixProject do
   def project do
     [
       app: :req_crawl,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.14",
       name: "ReqCrawl",
       start_permanent: Mix.env() == :prod,
@@ -46,7 +46,7 @@ defmodule ReqCrawl.MixProject do
 
   defp docs do
     [
-      main: "ReqCrawl.Robots"
+      main: "ReqCrawl"
     ]
   end
 end
